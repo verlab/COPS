@@ -31,11 +31,6 @@ class COPS:
         #self.g.add_nodes_from(range(self.dimension))
         if self.edge_weight_type == 'CEIL_2D':
             self.euclidean_2D()
-
-        #print(self.g.nodes())
-        #print(self.g.edges())
-        #print(nx.get_edge_attributes(self.g, "weight"))
-
         #return self.g
 
     def euclidean_2D(self):
@@ -150,7 +145,6 @@ class COPS:
 
         #plt.autoscale(enable=True)
         #fig.set_size_inches(10, 5)#(10.5, 18.5)
-        print(name)
         if save_img:
             plt.savefig(name)
         plt.show()

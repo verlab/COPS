@@ -12,6 +12,7 @@ def receive_data():
 
     # Adding named arguments
     parser.add_argument('--path', help='address of the file you want to run')
+    parser.add_argument('--save_img', help='True or False if you need to save the image result or not, DEFAULT=True')
     # Add more named arguments as needed
 
     # Parsing the arguments received
@@ -29,14 +30,14 @@ def spreadsheet_header(results_file):
         if not content:
             with open(results_file, 'a') as file:
                 file.write(
-                    f"name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;clusters_visited;method")
+                    f"name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method")
     else:
         with open(results_file, 'a') as file:
             file.write(
-                f"name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;clusters_visited;method")
+                f"name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method")
 
 
-def main(dir, problem, results_file):
+def main(dir, problem, results_file, save_img):
     f = open(results_file, "a")
     """ Read the dataset """
     dataset = fr"{dir}\{problem}.cops"
@@ -49,8 +50,8 @@ def main(dir, problem, results_file):
     solution = tbs.main()
 
     tempoExec = time.time() - t1
-    print("Tempo de execução: {} segundos".format(tempoExec))
-    print("Tempo de execução:", time.strftime('%H:%M:%S', time.gmtime(tempoExec)))
+    print("Runtime: {} seconds".format(tempoExec))
+    print(f"Runtime: {time.strftime('%H:%M:%S', time.gmtime(tempoExec))}")
 
     print("------ Final Solution -------")
     print("solution Tabu", solution)
@@ -61,7 +62,7 @@ def main(dir, problem, results_file):
         # Create a new directory because it does not exist
         os.makedirs(img_path)
     img_saved = fr"{img_path}/{problem}"
-    cops.draw_2D(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=img_saved, save_img=True)
+    cops.draw_2D(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=img_saved, save_img=save_img)
 
     f.write(
         f"\n{problem};"
@@ -72,7 +73,7 @@ def main(dir, problem, results_file):
         f"{str(solution['profit']).replace('.', ',')};"
         f"{str(round(solution['distance'], 2)).replace('.', ',')};"
         f"{str(solution['route']).replace(',', ' ')};"
-        f"{str(solution['clusters_visited']).replace(',', ' ')};"
+        f"{str(solution['subgroups_visited']).replace(',', ' ')};"
         f"COPS-TABU")
     f.close()
 
@@ -89,6 +90,10 @@ if __name__ == '__main__':
         dir = os.path.dirname(args.path)
         problem = os.path.basename(args.path).split('.')[0]
     results_path = fr"{dir}\results"
+    # Getting argument to understand if its necessary to save img into img path
+    save_img = True  # default true
+    if args.save_img == 'False':
+        save_img = False
 
     # result file
     if not os.path.exists(results_path):
@@ -99,7 +104,5 @@ if __name__ == '__main__':
     spreadsheet_header(results_file)
 
     # call main
-    main(dir, problem, results_file)
+    main(dir, problem, results_file, save_img)
     print("THE PROCESS IS FINISHED")
-
-    """ CONFERIR CLUSTERS VISITED OU SUBGROUPS VISITED """

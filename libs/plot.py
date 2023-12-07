@@ -64,23 +64,3 @@ def plot3D(points, clusters, path):
         ax.plot(x, y, z, color='black')  #label='parametric curve')
     plt.savefig('saved')
     plt.show()
-
-
-#vertex = np.array([(0, 0), (1, 1), (1, 2), (2, 2), (2, 30)])
-#visited = np.array([(0, 3), (0, 4), (1, 2), (1, 3), (2, 4)])
-
-#plot(vertex)
-#plot_edges(vertex, visited)
-
-'''
-aux1 = np.array(range(5))
-for i in range(5):
-    aux = aux1[aux1 != i]
-    print(aux)
-    print([((i, j) if j>i else (j,i)) for j in aux])
-    #for j in aux: a = sum((i, j) if j > i else (j, i))
-    #print(a)
-
-
-#print([(a,b) for a in range(5) for b in range(5)])
-'''

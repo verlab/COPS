@@ -1,7 +1,5 @@
-import numpy as np
 import os
 import time
-import sys
 
 import libs.COPS_ILP as cops
 from libs.grafo import COPS
@@ -26,7 +24,7 @@ f.close()
 def main(dir, problem, replication=1):
     csop = COPS()
 
-    dataset = fr"{os.getcwd()}/{dir}/{problem}.csop"
+    dataset = fr"{os.getcwd()}/{dir}/{problem}.cops"
     #v = fr"{dir}/results/{replication}_{problem}.csv"
     #f = open(v, "a")
     #v = fr"{dir}/results_ilp/{problem}_ilp.csv"
@@ -54,7 +52,7 @@ def main(dir, problem, replication=1):
     print("Tempo de execução:", time.strftime('%H:%M:%S', time.gmtime(tempoExec)))
 
     legend = ["r"]
-    #csop.draw_2D(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=f"{dir}/img/{problem}_ILP", save_img=save_img)
+    #cops.draw_2D(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=f"{dir}/img/{problem}_ILP", save_img=save_img)
 
     f.write(
         f"\n{problem};{len(csop.list_vertex) - 1};{csop.n_subgroups - 1};{len(csop.list_clusters) - 1};{str(round(tempoExec, 3)).replace('.', ',')};{str(solution['profit']).replace('.', ',')}"
@@ -65,7 +63,7 @@ def main(dir, problem, replication=1):
 if __name__ == '__main__':
     replications = 1
     for nome_arquivo in os.listdir(dir):
-        if nome_arquivo.endswith('.csop'):
+        if nome_arquivo.endswith('.cops'):
             experiment = os.path.splitext(nome_arquivo)[0]
             print(experiment)
             for r in range(1, replications + 1):

@@ -19,12 +19,10 @@ bibtex article
 - [Results](#results)
 
 ## Introduction
-___
 
 The Clustered Orienteering Problem with Subgroups (COPS) deals with optimizing routes in clustered environments, where subgroups within clusters are considered for efficient navigation. This repository provides Python source code for two solving approaches: COPS-TABU, a heuristic approach, and COPS-ILP, an Integer Linear Programming formulation.
 
 ## Dependencies
-___
 
 - Python 3.7
 - Another dependencies in requirements.txt
@@ -34,7 +32,7 @@ pip install -r requirements.txt
 - [Gurobi (10.0.0)](https://www.gurobi.com/) license 
 
 ## Datasets
-___
+
 
 Datasets folder contains some instances examples of COPS. 
 
@@ -44,7 +42,6 @@ To create a new instance you will need to ...
 
 
 ## Usage 
-___
 
 ### COPS-TABU
 
@@ -56,13 +53,15 @@ python tabu_search.py --path=.\datasets\11berlin52_T100_p2.cops
 ```
 python tabu_search.py --help
 
-usage: tabu_search.py [-h] [--path PATH]
+usage: tabu_search.py [-h] [--path PATH] [--save_img SAVE_IMG]
 
 execution arguments
 
 optional arguments:
-  -h, --help   show this help message and exit
-  --path PATH  address of the file you want to run
+  -h, --help           show this help message and exit
+  --path PATH          address of the file you want to run
+  --save_img SAVE_IMG  True or False if you need to save the image result or
+                       not, DEFAULT=True
 ```
 
 ### ILP
@@ -78,7 +77,7 @@ OBS:
 - ILP uses a huge amount of RAM, so its use is limited to problems with some vertices.
 
 ## Results
-___
+
 
 ### Images
 
@@ -95,5 +94,5 @@ Results information can be seen in ./datasets/results. The results path have a .
 - Profit of the route. 
 - Distance of the route.
 - Route indicated according to the vertex index.
-- Clusters index visited.
+- Subgroups index visited.
 - Method used in the current solution (COPS_TABU or ILP)
