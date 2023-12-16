@@ -62,7 +62,7 @@ def main(dir, problem, results_file, save_img):
         # Create a new directory because it does not exist
         os.makedirs(img_path)
     img_saved = fr"{img_path}/{problem}"
-    cops.draw_2D(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=img_saved, save_img=save_img)
+    cops.draw(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=img_saved, save_img=save_img)
 
     f.write(
         f"\n{problem};"
@@ -81,8 +81,7 @@ def main(dir, problem, results_file, save_img):
 if __name__ == '__main__':
     # standart problem
     dir = fr"{os.getcwd()}\datasets"
-    problem = "11berlin52_T100_p2"
-    # problem = "non_circular"
+    problem = "example_likeCOP"
 
     # Getting parsed problem
     args = receive_data()

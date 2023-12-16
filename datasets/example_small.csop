@@ -1,0 +1,41 @@
+NAME: Exemplo2_CSOP
+COMMENT: CSOP::[From Almeida. a non-circular path for The Clustered Set Orienteering Problem]
+TYPE: TSP
+DIMENSION: 17
+TMAX: 30
+START_SET: 0
+END_SET: 3
+SETS: 4
+CLUSTERS: 7
+EDGE_WEIGHT_TYPE: CEIL_2D
+NODE_COORD_SECTION: id_vertex x y z
+ 0 0 0
+ 1 1 1
+ 2 1 5
+ 3 2 2
+ 4 2 4
+ 5 3 3
+ 6 4 1
+ 7 4 5
+ 8 10 10
+ 9 10 14
+ 10 11 11
+ 11 11 13
+ 12 12 12
+ 13 13 10
+ 14 13 14
+ 15 16 6
+ 16 16 8
+GTSP_CLUSTER_SECTION: cluster_id cluster_profit id-vertex-list
+0 0 0
+1 10 1 2 6 7
+2 6 3 4 5
+3 10 8 9 13 14
+4 6 10 11 12
+5 0 15
+6 0 16
+GTSP_SET_SECTION: set_id id-cluster-list
+0 0
+1 1 2
+2 3 4
+3 5 6

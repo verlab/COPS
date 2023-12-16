@@ -35,8 +35,21 @@ pip install -r requirements.txt
 
 
 Datasets folder contains some instances examples of COPS. 
+To create a new instance you will need to follow some rules based on [TSPLIB 95.](http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/tsp95.pdf)
 
-To create a new instance you will need to ...
+Valid specification:
+
+- EDGE WEIGHT TYPE : (string)
+
+- - EXPLICIT Weights are listed explicitly in the corresponding section
+
+- - EUC_2D Weights are Euclidean distances in 2-D
+
+- - EUC_3D Weights are Euclidean distances in 3-D
+    
+
+- EDGE WEIGHT FORMAT : (string)
+- - FULL MATRIX Weights are given by a full matrix
 
 
 

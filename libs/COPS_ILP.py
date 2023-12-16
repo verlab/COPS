@@ -1,5 +1,5 @@
 """ Thanks
-https://www.gurobi.com/features/academic-named-user-license/    # instação gurobi
+https://www.gurobi.com/features/academic-named-user-license/    # install gurobi
 https://support.gurobi.com/hc/en-us/community/posts/4404976974865-Orienteering-Problem
 """
 
