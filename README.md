@@ -7,7 +7,7 @@ This repository contains Python source code implementing two approaches, COPS-TA
 bibtex article
 ```
 
-![COPS Examples](./datasets/img/11berlin52_p1.png)
+![COPS Examples](./datasets/img/examples.jpg)
 
 
 ## Contents
