@@ -1,0 +1,3 @@
+name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method
+11eil51_T60_p1;50;50;11;0,992;39,0;99,71;[(0  21)  (21  1)  (1  37)  (37  16)  (16  17)  (17  5)  (5  26)  (26  0)];[0  1  5  16  17  21  26  37];ILP
+11eil51_T60_p1;50;50;11;1,319;39,0;98,85;[(0  5)  (5  17)  (17  3)  (3  4)  (4  10)  (10  1)  (1  21)  (21  0)];[0  17  3  10  21  4  1  5  0];COPS-TABU
