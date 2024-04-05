@@ -1,6 +1,6 @@
 NAME: 29pr144_T100_p1
 COMMENT: From Verlab UFMG / COPS instance based on SOP instances https://github.com/ctu-mrs/vns-sop/tree/master/datasets/sop 
-TYPE: TSP
+TYPE: COPS
 DIMENSION: 144
 TMAX: 45886
 START_CLUSTER: 0

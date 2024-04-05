@@ -1,6 +1,6 @@
 NAME: 11eil51_T60_p1
 COMMENT: From Verlab UFMG / COPS instance based on SOP instances https://github.com/ctu-mrs/vns-sop/tree/master/datasets/sop 
-TYPE: TSP
+TYPE: COPS
 DIMENSION: 51
 TMAX: 104
 START_CLUSTER: 0

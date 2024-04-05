@@ -1,5 +1,5 @@
 NAME: 11berlin52_T40_p1
-TYPE: TSP
+TYPE: COPS
 COMMENT: From Verlab UFMG / COPS instance based on SOP instances https://github.com/ctu-mrs/vns-sop/tree/master/datasets/sop 
 DIMENSION: 52
 TMAX: 1616
