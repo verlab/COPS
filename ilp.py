@@ -2,7 +2,7 @@ import argparse
 import os
 import time
 
-import libs.COPS_ILP as ilpCOPS
+from libs.COPS_ILP import IlpCOPS
 from libs.grafo import COPS
 
 
@@ -46,7 +46,8 @@ def main(dir, problem, results_file, save_img):
 
     print("------ILP-------")
     t1 = time.time()
-    solution = ilpCOPS.main(cops)
+    ilp_cops = IlpCOPS(cops)
+    solution = ilp_cops.main()
 
     print("------ Final Solution -------")
     print("solution ILP", solution)
@@ -61,9 +62,9 @@ def main(dir, problem, results_file, save_img):
         # Create a new directory because it does not exist
         os.makedirs(img_path)
     img_saved = fr"{img_path}/{problem}"
-    cops.draw_2D(path=solution["route"], legend=legend, fill_cluster=True, fill_set=True, name=img_saved,
-                 save_img=save_img)
-
+    cops.draw_2D(path=solution["route"], legend=legend, fill_cluster=False, fill_set=True, name=img_saved, save_img=save_img)
+    print('profit', solution['profit'])
+    print('distance', solution["distance"])
     f.write(
         f"\n{problem};"
         f"{len(cops.list_vertex) - 1};"
@@ -74,7 +75,7 @@ def main(dir, problem, results_file, save_img):
         f"{str(round(solution['distance'], 2)).replace('.', ',')};"
         f"{str(solution['route']).replace(',', ' ')};"
         f"{str(solution['subgroups_visited']).replace(',', ' ')};"
-        f"COPS-TABU")
+        f"ILP")
     f.close()
 
 
@@ -83,8 +84,8 @@ if __name__ == '__main__':
     args = receive_data()
 
     # problem file
-    dir = fr"{os.getcwd()}\datasets"
-    problem = "example_2"
+    dir = fr"{os.getcwd()}/datasets/cops"
+    problem = "experiment_varying_clusters_12"
     if args.path:
         dir = os.path.dirname(args.path)
         problem = os.path.basename(args.path).split('.')[0]

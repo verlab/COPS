@@ -1,0 +1,2 @@
+name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method
+11eil51_T40_p1;50;50;11;0,046;17,0;68;[(np.int64(0)  np.int64(10))  (np.int64(10)  np.int64(4))  (np.int64(4)  np.int64(5))  (np.int64(5)  np.int64(0))];[np.int64(0)  np.int64(10)  np.int64(5)  np.int64(4)  np.int64(0)];COPS-TABU

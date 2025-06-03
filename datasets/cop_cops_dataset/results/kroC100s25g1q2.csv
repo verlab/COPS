@@ -1,2 +1,0 @@
-name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method
-kroC100s25g1q2;99;25;25;34,291;30,0;10378,95;[(31  0)  (0  39)  (39  26)  (26  64)  (64  30)  (30  63)  (63  41)  (41  24)  (24  33)  (33  27)  (27  37)  (37  38)  (38  61)  (61  34)  (34  29)  (29  40)  (40  35)  (35  32)  (32  65)  (65  62)  (62  36)  (36  28)  (28  60)  (60  25)  (25  31)];[0  10  7  9  8  16  0];COPS-TABU

@@ -60,7 +60,7 @@ Valid specification:
 
 COPS-TABU can be run using tabu_search.py, example:
 ```
-python tabu_search.py --path=.\datasets\11berlin52_T100_p2.cops
+python tabu_search.py --path=.\datasets\example_likeCOP.cops
 ```
 
 ```

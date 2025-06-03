@@ -1,4 +1,6 @@
 """ Traveling salesman problem with 2-opt """
+""" Thanks: https://www.keiruaprod.fr/blog/2021/09/15/traveling-salesman-with-2-opt.html
+    and https://stackoverflow.com/questions/25585401/travelling-salesman-in-scipy """
 
 # tsp.py
 import numpy as np

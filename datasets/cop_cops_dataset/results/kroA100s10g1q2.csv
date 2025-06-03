@@ -1,0 +1,2 @@
+name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method
+kroA100s10g1q2;99;10;10;5,649;12,0;9397;[(np.int64(0)  np.int64(46))  (np.int64(46)  np.int64(44))  (np.int64(44)  np.int64(50))  (np.int64(50)  np.int64(49))  (np.int64(49)  np.int64(43))  (np.int64(43)  np.int64(51))  (np.int64(51)  np.int64(47))  (np.int64(47)  np.int64(40))  (np.int64(40)  np.int64(42))  (np.int64(42)  np.int64(45))  (np.int64(45)  np.int64(41))  (np.int64(41)  np.int64(48))  (np.int64(48)  np.int64(0))];[0  5  0];COPS-TABU

@@ -80,9 +80,9 @@ def main(dir, problem, results_file, save_img):
 
 if __name__ == '__main__':
     # standart problem
-    dir = fr"{os.getcwd()}\datasets"
-    problem = "example_likeCOP"
-
+    dir = fr"{os.getcwd()}/datasets/cops"
+    problem = "example_3D"
+    
     # Getting parsed problem
     args = receive_data()
     if args.path:

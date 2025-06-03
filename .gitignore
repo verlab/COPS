@@ -161,6 +161,7 @@ cython_debug/
 #.idea/
 
 # Outros
+.idea
 COPS_Material/
 img/
 original/
@@ -169,6 +170,7 @@ lixo/
 *.jpg
 
 requirements_antigo.txt
+*/ignore
 *.sop 
 *.cop
 

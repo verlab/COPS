@@ -2,7 +2,7 @@
 """
 import math
 
-import alphashape as alphashape
+#import alphashape as alphashape
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
@@ -10,6 +10,12 @@ import numpy as np
 from matplotlib.patches import Polygon as mplPolygon
 from shapely.geometry import MultiPoint
 
+def need_edge(subgroup_per_vertex, cluster_per_vertex, a, b):
+    if any(x in subgroup_per_vertex[b] for x in subgroup_per_vertex[a]):
+        return True
+    if any(x not in cluster_per_vertex[a] for x in cluster_per_vertex[b]):
+        return True
+    return False
 
 class COPS:
     def __init__(self):
@@ -29,7 +35,10 @@ class COPS:
         if self.edge_weight_type == 'CEIL_2D' or self.edge_weight_type == 'EUC_2D':
             num_columns = 2
             self.list_vertex = [self.list_vertex[i:i + num_columns] for i in range(0, len(self.list_vertex), num_columns)]
-            self.euclidean_2D()
+            if self.edge_weight_type == 'CEIL_2D':
+                self.ceil_2D()
+            if self.edge_weight_type == 'EUC_2D':
+                self.euclidean_2D()
         if self.edge_weight_type == 'CEIL_3D' or self.edge_weight_type == 'EUC_3D':
             num_columns = 3
             self.list_vertex = [self.list_vertex[i:i + num_columns] for i in range(0, len(self.list_vertex), num_columns)]
@@ -51,15 +60,52 @@ class COPS:
                 self.matrix_dist[i][j] = dist
                 self.matrix_dist[j][i] = dist
 
-    def euclidean_2D(self):
+    def ceil_2D(self):
+        subgroup_per_vertex = [[index_s for index_s in range(len(self.list_subgroups)) if v in self.list_subgroups[index_s]] 
+                               for v in range(self.dimension)]
+
+        cluster_per_vertex = [[index_c for index_c in range(len(self.list_clusters)) if any(s in self.list_clusters[index_c] for s in s_per_v)] 
+                              for s_per_v in subgroup_per_vertex ]
+                
         for i in range(self.dimension-1):
             for j in range(i+1, self.dimension):
-                a = np.array(self.list_vertex[i])
-                b = np.array(self.list_vertex[j])
-                #dist = math.ceil(np.linalg.norm(a-b))
-                dist = np.linalg.norm(a-b)
-                self.matrix_dist[i][j] = dist
-                self.matrix_dist[j][i] = dist
+                if need_edge(subgroup_per_vertex, cluster_per_vertex, i, j):
+                    a = np.array(self.list_vertex[i])
+                    b = np.array(self.list_vertex[j])
+                    dist = math.ceil(np.linalg.norm(a-b))
+                    #dist = np.linalg.norm(a-b)
+                    self.matrix_dist[i][j] = dist
+                    self.matrix_dist[j][i] = dist
+                    #print('dist', dist)
+                else:
+                    self.matrix_dist[i][j] = 9999999#np.inf
+                    self.matrix_dist[j][i] = 9999999#np.inf
+                    #print(j, i, self.matrix_dist[j][i])
+
+        self.matrix_dist = self.matrix_dist.astype(int)
+        #self.matrix_dist = np.full((self.dimension, self.dimension), np.inf)
+
+    def euclidean_2D(self):
+        subgroup_per_vertex = [
+            [index_s for index_s in range(len(self.list_subgroups)) if v in self.list_subgroups[index_s]]
+            for v in range(self.dimension)]
+
+        cluster_per_vertex = [[index_c for index_c in range(len(self.list_clusters)) if
+                               any(s in self.list_clusters[index_c] for s in s_per_v)]
+                              for s_per_v in subgroup_per_vertex]
+
+        for i in range(self.dimension - 1):
+            for j in range(i + 1, self.dimension):
+                if need_edge(subgroup_per_vertex, cluster_per_vertex, i, j):
+                    a = np.array(self.list_vertex[i])
+                    b = np.array(self.list_vertex[j])
+                    #dist = math.ceil(np.linalg.norm(a - b))
+                    dist = np.linalg.norm(a-b)
+                    self.matrix_dist[i][j] = dist
+                    self.matrix_dist[j][i] = dist
+                else:
+                    self.matrix_dist[i][j] = np.inf
+                    self.matrix_dist[j][i] = np.inf
 
     def draw(self, path=[], legend=[], fill_cluster=False, fill_set=False, name='saved', save_img=False):
         if self.edge_weight_type == 'CEIL_3D' or self.edge_weight_type == 'EUC_3D':
@@ -83,7 +129,7 @@ class COPS:
 
         minrew = min(profit)
         maxrew = max(profit)
-        mycmap = plt.cm.get_cmap('RdYlBu_r')
+        mycmap = plt.get_cmap('RdYlBu_r')
         cNorm = mpl.colors.Normalize(vmin=minrew, vmax=maxrew + 0.1 * (maxrew - minrew))
         mycmapScalarMap = mpl.cm.ScalarMappable(norm=cNorm, cmap=mycmap)
 
@@ -111,7 +157,7 @@ class COPS:
                 cluster_points = MultiPoint([(points[p][0], points[p][1]) for p in clusters[c]])
                 concave_hull = cluster_points.convex_hull
                 dilated = concave_hull.buffer(dilate_size)
-                mpl_patch = mplPolygon(dilated.exterior.coords, fc=this_color, ec=this_color, alpha=0.1, zorder=1)
+                mpl_patch = mplPolygon(dilated.exterior.coords, fc=this_color, ec=this_color, alpha=0.9, zorder=1)
                 ax.add_patch(mpl_patch)
 
         '''if fill_set:

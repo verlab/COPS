@@ -1,0 +1,2 @@
+name_problem;num_vertices;num_subgroups;num_clusters;time;profit;distance;route;subgroups_visited;method
+11berlin52_T80_p2;51;51;11;0,036;2384,0;3118;[(np.int64(41)  np.int64(20))  (np.int64(20)  np.int64(17))  (np.int64(17)  np.int64(18))  (np.int64(18)  np.int64(44))  (np.int64(44)  np.int64(50))  (np.int64(50)  np.int64(11))  (np.int64(11)  np.int64(31))  (np.int64(31)  np.int64(0))  (np.int64(0)  np.int64(41))];[np.int64(0)  np.int64(18)  np.int64(44)  np.int64(11)  np.int64(31)  np.int64(17)  np.int64(50)  np.int64(20)  np.int64(41)  np.int64(0)];COPS-TABU

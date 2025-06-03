@@ -14,7 +14,7 @@ def my_print(msg, index_print=0):
 
 
 class TabuSearchCOPS(COPS):
-    def __init__(self, cops_class):
+    def __init__(self, csop_class):
         self.tabu_alfa = 2
         self.beta = 4
         self.max_initial_solution_attempts = 10
@@ -22,9 +22,10 @@ class TabuSearchCOPS(COPS):
         self.max_iterations_without_improvement = 10
         self.iterations_to_change_final_set = 0
 
-        self.cops = cops_class
-        self.array_profit = np.array(cops_class.profit)
-        self.matrix_dist = cops_class.matrix_dist
+        self.csop = csop_class
+        self.array_profit = np.array(csop_class.profit)
+        self.matrix_dist = csop_class.matrix_dist
+        self.matrix_dist_int = self.matrix_dist#.astype(int)
 
         # VERTICES
         """ self.array_vertex[v][x]
@@ -33,12 +34,12 @@ class TabuSearchCOPS(COPS):
                    [1] -> if vertex is being visited (1 visited, 0 otherwise) 
                    [2] -> list of clusters who this vertex belongs it
         """
-        self.array_vertex = np.array([np.array([np.array(x), 0, []], dtype=object) for x in cops_class.list_vertex],
+        self.array_vertex = np.array([np.array([np.array(x), 0, []], dtype=object) for x in csop_class.list_vertex],
                                      dtype=object)
 
         # SETS
         """  """
-        self.array_sets = np.array([np.array(x) for x in cops_class.list_clusters], dtype=object)
+        self.array_sets = np.array([np.array(x) for x in csop_class.list_clusters], dtype=object)
         self.num_sets = len(self.array_sets)
 
         # CLUSTERS
@@ -53,7 +54,7 @@ class TabuSearchCOPS(COPS):
                    [6] -> index (profit / number_of_cluster)  
         """
         self.array_clusters = np.array(
-            [np.array([np.array(cops_class.list_subgroups[x]), [], 0, 0, 0, 1, self.array_profit[x] / len(cops_class.list_subgroups[x])], dtype=object) for x in range(len(cops_class.list_subgroups))], dtype=object)
+            [np.array([np.array(csop_class.list_subgroups[x]), [], 0, 0, 0, 1, self.array_profit[x]/len(csop_class.list_subgroups[x])], dtype=object) for x in range(len(csop_class.list_subgroups))], dtype=object)
         #my_print(f"array_cluster {self.array_clusters}", index_print=1)
         self.num_clusters = len(self.array_clusters)
         # Note that the same cluster can belong to more than one set.
@@ -70,8 +71,8 @@ class TabuSearchCOPS(COPS):
             for v in self.array_clusters[c][0]:
                 self.array_vertex[v][2].append(c)
 
-        self.start_set = cops_class.start_cluster
-        self.end_set = cops_class.end_cluster
+        self.start_set = csop_class.start_cluster
+        self.end_set = csop_class.end_cluster
 
         self.start_cluster = self.array_sets[self.start_set][0]  # The start cluster is inside start set
         self.array_clusters[self.start_cluster][2] = 1  # long term memory (>=1 in solution)
@@ -97,6 +98,7 @@ class TabuSearchCOPS(COPS):
 
         """ These variable indicates whether a cluster or set is being visited
             0 -> unvisited  1 -> visited"""
+        # self.clusters_visited = np.zeros(len(self.array_clusters))
         self.sets_visited = np.zeros(len(self.array_sets))
         # self.vertex_visited = np.zeros(len(self.array_vertex))
 
@@ -120,7 +122,7 @@ class TabuSearchCOPS(COPS):
         n_tour, n_distance = self.tour_generation(neighbor)
 
         """ verify if this neighborhood is feasible """
-        if n_distance < self.cops.t_max:
+        if n_distance < self.csop.t_max:
             """ verify if this neighborhood has the best profit or
                 if the neighborhood has the same profit but less distance 
                 NOTE: It will choose better paths when the profit is equal and the distance is less """
@@ -140,6 +142,7 @@ class TabuSearchCOPS(COPS):
                     self.sets_visited[s] = 1
 
                 """ update long_term_memory """
+                #for c in self.clusters_que_podem_ser_atualizados:
                 for c in range(self.num_clusters):
                     if self.array_clusters[c][2] > 0:
                         self.array_clusters[c][2] += 1
@@ -163,6 +166,7 @@ class TabuSearchCOPS(COPS):
     def tour_update_remove_cluster(self, removed_cluster):
         n_tour = []
         n_distance = 0
+        #my_print("TESTANDO tour_update_remove_cluster")
 
         """ eliminate a vertex if it belongs ONLY to the cluster who will be removed """
         eliminated_vertex = []
@@ -187,36 +191,37 @@ class TabuSearchCOPS(COPS):
                     init = self.solution["route"][t - 1][0]
                     end = self.solution["route"][t - 1][1]
                     n_tour.append((init, end))
-                    n_distance += self.cops.matrix_dist[init][end]
+                    n_distance += self.csop.matrix_dist[init][end]
                 else:
                     init = new_edge_init
                     new_edge_init = -1
                     end = self.solution["route"][t][0]
                     n_tour.append((init, end))
-                    n_distance += self.cops.matrix_dist[init][end]
+                    n_distance += self.csop.matrix_dist[init][end]
         # treatment for the last edge
         t = len(self.solution["route"]) - 1
         if new_edge_init == -1:
             init = self.solution["route"][t][0]
             end = self.solution["route"][t][1]
             n_tour.append((init, end))
-            n_distance += self.cops.matrix_dist[init][end]
+            n_distance += self.csop.matrix_dist[init][end]
         else:
             init = new_edge_init
             end = self.solution["route"][t][1]
             n_tour.append((init, end))
-            n_distance += self.cops.matrix_dist[init][end]
+            n_distance += self.csop.matrix_dist[init][end]
 
         return n_tour, n_distance
 
     def removal_neighborhood(self, neighbor, removed_cluster):
         #need_a_solution = True
 
+        """ melhorar """
         #n_tour, n_distance = self.tour_generation(neighbor)
         n_tour, n_distance = self.tour_update_remove_cluster(removed_cluster)
 
         """ verify if this neighborhood is feasible """
-        #if n_distance < self.cops.t_max:
+        #if n_distance < self.csop.t_max:
         """ update the aspiration level"""
         self.array_clusters[removed_cluster][4] = self.solution["profit"]
 
@@ -233,6 +238,7 @@ class TabuSearchCOPS(COPS):
             self.sets_visited[s] = 0
 
         """ update long_term_memory """
+        #for c in self.clusters_que_podem_ser_atualizados:
         for c in range(self.num_clusters):
             if self.array_clusters[c][2] > 0:
                 self.array_clusters[c][2] += 1
@@ -250,6 +256,8 @@ class TabuSearchCOPS(COPS):
         return False  #need_a_solution
 
     def insertion_criterion(self, index):
+        #my_print(f"insertion_criterion", index_print=1)
+        #print("index", index)
         criterion = self.array_clusters[index, 6] * self.array_clusters[index, 2]
         # remember: if we want to insert than the cluster are not in solution (long-term <= 0)
         min_value = np.argmin(criterion)
@@ -278,6 +286,7 @@ class TabuSearchCOPS(COPS):
                 elif long_term_memory > self.beta:
                     old_visited.append(i)
             else:
+                """ pode melhorar """
                 """ it's a possible insertion if this cluster don't belong to a set who is in the solution """
                 a = self.array_clusters[i][1]  # self.cluster_match_sets[i]
                 none_set_was_visited = True
@@ -292,6 +301,12 @@ class TabuSearchCOPS(COPS):
                         non_tabu_insertion.append(i)
                     else:
                         tabu_insertion.append(i)
+
+        # print("------ generated neighborhoods ---------------")
+        # print("visited", visited_clusters)
+        # print("unvisited", unvisited_clusters)
+        # print("non_tabu_insert", non_tabu_insert)
+        #print("LONG_TERM_MEMORY", self.array_clusters[:, 2])  # [c[2] for c in self.array_clusters])
 
         """ Non-Tabu Insertion """
         if any(non_tabu_insertion):
@@ -375,6 +390,7 @@ class TabuSearchCOPS(COPS):
                     my_print(f"discarded Random Insertion {chosen_cluster} {unvisited_clusters}")
 
         if need_a_neighborhood:
+            #for i in self.clusters_que_podem_ser_atualizados:
             for c in range(self.num_clusters):
                 long_term_memory = self.array_clusters[i][2]
                 if long_term_memory > 0:
@@ -391,19 +407,21 @@ class TabuSearchCOPS(COPS):
         my_print(f"solution {self.solution}")
         self.choose_best_solution()
 
+        ''' melhorar parada - definir estratégia mais esperta '''
         my_print("------ Generated Neighborhoods ---------------")
         cont = 0
         #   while cont < 200:
-        while self.iterations_without_improvement < 300:
+        max_iterations = (len(self.array_clusters)) * 2
+        while self.iterations_without_improvement < max_iterations:
             self.generate_neighborhood()
             cont += 1
-            if not self.cops.circular_path:
+            if not self.csop.circular_path:
                 if self.iterations_to_change_final_set > self.max_iterations_without_improvement:
                     self.change_end_cluster()
 
-        """ add start end end to solution clusters_visited"""
+        """ add start end end to solution subgroups_visited"""
         self.best_solution["subgroups_visited"].insert(0, self.start_cluster)
-        #self.best_solution["subgroups_visited"].append([c for c in self.array_sets[self.end_cluster] if self.array_clusters[c][2] > 0][0])
+        #self.best_solution["subgroups_visited"].append([c for c in self.array_sets[self.end_set] if self.array_clusters[c][2] > 0][0])
         self.best_solution["subgroups_visited"].append(self.best_end_cluster)
         #########################################
         return self.best_solution
@@ -435,7 +453,7 @@ class TabuSearchCOPS(COPS):
                 initial_tour, initial_distance = self.tour_generation(cv0)
 
                 """ test if the solution is plausible """
-                if initial_distance > self.cops.t_max:
+                if initial_distance > self.csop.t_max:
                     early_stop -= 1
                     cv0.pop(-1)
                     try:
@@ -460,7 +478,7 @@ class TabuSearchCOPS(COPS):
                 # my_print("-------------")
 
         """ For non_circular_path add the final cluster and set in their respective array """
-        if not self.cops.circular_path:
+        if not self.csop.circular_path:
             sets_visited.append(self.end_set)
             # clusters_visited.append(self.end_cluster)
 
@@ -489,7 +507,7 @@ class TabuSearchCOPS(COPS):
         my_print(f"vertex_visited {[i[1] for i in self.array_vertex]}")
 
         tempoExec = time.time() - t1
-        print("Runtime Init Solution: {} seconds".format(tempoExec))
+        print("Tempo de execução Init Solution: {} segundos".format(tempoExec))
 
     def tour_generation(self, clusters, improvement_threshold=0.001):
         """ tour is generated with 2-opt technic """
@@ -497,27 +515,63 @@ class TabuSearchCOPS(COPS):
         cv0 = clusters.copy()
         cv0.insert(0, self.start_cluster)
 
-        """ Note: the 2-opt solver needs a different treatment for a path that 
-                        ends at the same vertex it started """
-        if not self.cops.circular_path:
-            cv0.append(self.end_cluster)
-
         """ select only wanted vertex """
+        """ estudar o tempo de execução, com e sem a eliminação de elementos repetidos """
         #selected_index = [v for i in cv0 for v in self.array_clusters[i][0]]
         selected_index = list(OrderedDict.fromkeys([v for i in cv0 for v in self.array_clusters[i][0]]))  # will eliminate repeated elements
-        selected_vertex = np.array([self.array_vertex[i][0] for i in selected_index])
+        #selected_vertex = np.array([self.array_vertex[i][0] for i in selected_index])
+
+        """ greedy route based on the last route """
+        final_selected_index = []
+        if any(self.solution["route"]):
+            for k in self.solution["route"]:
+                index_v = k[0]
+                final_selected_index.append(index_v)
+                if index_v in selected_index:
+                    selected_index.remove(index_v)
+            for k in selected_index:
+                near_from_k = np.argmin(self.matrix_dist_int[final_selected_index][:, k])
+                final_selected_index.insert(near_from_k, k)
+
+            selected_index = final_selected_index
+            # print(selected_index)
+
+        """ Note: the 2-opt solver needs a different treatment for a path that 
+                                       ends at the same vertex it started """
+        if not self.csop.circular_path:
+            # cv0.append(self.end_subgroup)
+            final_vertex = self.array_subgroups[self.end_subgroup][0][0]
+            if final_vertex not in final_selected_index: final_selected_index.append(final_vertex)
+
+        if False:  #self.csop.circular_path:
+            """ calc the route using fast_tsp 
+            OBS: fast_tsp does not specify the end depot """
+            array_selected_index = np.array(selected_index)
+            selected_matrix_dist = self.matrix_dist_int[array_selected_index[:, None], array_selected_index]
+            route = fast_tsp.find_tour(selected_matrix_dist)
+        else:
+            """ calc the route from two-opt algorithm """
+            selected_vertex = np.array([self.array_vertex[i][0] for i in selected_index])
+            route = two_opt(selected_vertex, improvement_threshold, is_a_circular_path=self.csop.circular_path)
 
         """ calc the route from two-opt algorithm """
-        route = two_opt(selected_vertex, improvement_threshold, is_a_circular_path=self.cops.circular_path)
+        #route = two_opt(selected_vertex, improvement_threshold, is_a_circular_path=self.csop.circular_path)
         real_route = [selected_index[i] for i in route]  # the real route is mapped from route
 
         """ define the edges from the found route """
         edges = [(real_route[i], real_route[i + 1]) for i in range(len(real_route) - 1)]
-        if self.cops.circular_path:  # increase the last edge for a circular path
+        if self.csop.circular_path:  # increase the last edge for a circular path
             edges.append((real_route[-1], real_route[0]))
-        distance = path_distance_for_circular(route, selected_vertex)  # only for conference
+        #distance = path_distance_for_circular(route, selected_vertex)  # only for conference
         """ calculate the path distance from edge distances matrix """
         d = sum([self.matrix_dist[edge[0]][edge[1]] for edge in edges])
+
+        # print('selected_index', selected_index)
+        # print('selected_vertex', selected_vertex)
+        # print('route', route, real_route)
+        # print('edges', edges)
+        # print("another_distance", distance)
+        # print("distance", d)
 
         return edges, d
 
@@ -552,3 +606,9 @@ class TabuSearchCOPS(COPS):
 
         # reboot iterations counter
         self.iterations_to_change_final_set = 0
+
+
+
+
+
+
