@@ -2,7 +2,7 @@ NAME: example_NonCircularRoute
 COMMENT: From Verlab UFMG / COPS non-circular instance
 TYPE: COPS
 DIMENSION: 35
-TMAX: 60
+TMAX: 70
 START_CLUSTER: 0
 END_CLUSTER: 3
 CLUSTERS: 6
